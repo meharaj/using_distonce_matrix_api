@@ -1,0 +1,97 @@
+ <html >
+    <head>
+        <title></title>
+        <script>
+            var list = [];
+			var j = [];
+
+            function getText() {
+                var str = document.getElementById("txt");
+
+
+                list.push(str.value);
+                str.value = "";
+                str.focus();
+                var area = document.getElementById("txtArea");
+                area.value = "";
+                for (var i = 0; i < list.length; i++) {
+                    area.value += list[i] + "\n";
+                }
+            }
+			function put()
+			{ var area1 = document.getElementById("txtArea1");
+		 for (var i = 0; i < list.length-1; i++) {
+                    area1.value += list[i] + "-to-"+list[i+1]+"\n";
+                }
+			}
+			
+        </script>
+		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript">
+//var origin = new google.maps.LatLng(55.930385, -3.118425),
+
+function add()
+{   var area1 = document.getElementById("txtArea2");
+		  for (var i = 0; i < list.length-1; i++)
+		  {
+                   
+  				var origin=list[i];
+ 				 var destination = list[i+1];
+ 				var service = new google.maps.DistanceMatrixService();
+
+			service.getDistanceMatrix(
+    		{
+      		  origins: [origin],
+      		  destinations: [destination],
+       		 travelMode: google.maps.TravelMode.DRIVING,
+      		  avoidHighways: false,
+       		 avoidTolls: false
+ 		   }, 
+    callback
+	);area1.value+=origin+"+"+destination+"\n";
+	}
+	
+}
+
+function callback(response, status) {
+  //  var orig = document.getElementById("orig"),
+    //   dest = document.getElementById("dest"),
+       var orig,dest,di;
+	  
+
+   if(status=="OK") {
+ /* j.push("raj");
+  var k=j.pop();
+  alert(k);*/
+      orig = response.destinationAddresses[0];
+       dest= response.originAddresses[0];
+       di=response.rows[0].elements[0].distance.text;
+	   var t=dest+"-to-"+orig+"="+di;
+	  /* j.push(orig+"-"+dest+"="+di);
+                j.value = "";
+                j.focus();*/j.push(t);
+	   // alert(t);
+    } else {
+       alert("Error: " + status);
+    }
+}
+function dis()
+{
+  var dist = document.getElementById("txtArea3");
+   for (var i = 0; i < j.length; i++) {
+                    dist.value += j[i] +"\n";}
+					}
+</script>
+    </head>
+    <body>
+        <input type="text" id="txt" />
+        <br />
+        <input type="button" value="enter cities" onClick="getText();" />
+        <br />
+        <textarea name="textarea" rows="5" id="txtArea"></textarea>
+        <input type="button" value="see" onClick="put();" />
+		 <textarea name="textarea" rows="5" id="txtArea1"></textarea> <input type="button" value="distonce" onClick="add();" /><br/>
+		 <textarea name="textarea" rows="5" id="txtArea2"></textarea>
+		  <textarea name="textarea" rows="5" cols="80" id="txtArea3" ></textarea><input type="button" value="display" onClick="dis();" />
+    </body>
+    </html>
